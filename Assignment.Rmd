@@ -1,0 +1,31 @@
+---
+title: "Assignment_AP"
+author: "Phan Minh Trung"
+date: "2025-06-03"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Report for assignment 
+
+#Introduction
+
+In this day and age, understanding user behavior and engagement patterns is significant in developing a digital platforms and constructing a  meaningful user experiences. By tasks provided below, this report provides an analytical perspective of user activity within an online community, based on real-world data comprising user profiles, business listings, and their reviews. By applying data science workflow, the primary objective of this project is to gather insights from these datasets- users, business, and reviews using RStudio as a major software and language for analysis 
+
+#Pre-process data procedures
+
+Before getting into analysis, the first and foremost step in analysis is loading, getting sense and cleaning datasets. 
+
+
+
+
+
+
+
+
+
+
