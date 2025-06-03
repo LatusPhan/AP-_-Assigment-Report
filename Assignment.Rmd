@@ -20,6 +20,49 @@ In this day and age, understanding user behavior and engagement patterns is sign
 
 Before getting into analysis, the first and foremost step in analysis is loading, getting sense and cleaning datasets. 
 
+## Load the data
+
+The provided datasets are formatted as csv files. Therefore we use read.csv built in the Rstudio
+
+```{r}
+#Load data
+data_users=read.csv("users.csv")
+data_bs=read.csv("businesses.csv")
+data_rv=read_csv("reviews.csv",show_col_types = FALSE)
+```
+
+
+```{r}
+#First ten rows of users dataset
+head(data_users)
+```
+```{r}
+#Structure and summary of the dataset
+summary(data_users)
+```
+
+
+```{r}
+#First ten rows of users dataset
+head(data_bs)
+```
+
+```{r}
+#Structure and summary of the dataset
+summary(data_bs)
+```
+
+```{r}
+#First ten rows of users dataset
+head(data_rv)
+```
+
+
+```{r}
+#Structure and summary of the dataset
+summary(data_rv)
+```
+
 
 
 
