@@ -39,17 +39,20 @@ head(data_users)
 ```{r}
 #Structure and summary of the dataset
 summary(data_users)
+dim(data_users)
 ```
 
 
 ```{r}
 #First ten rows of users dataset
 head(data_bs)
+
 ```
 
 ```{r}
 #Structure and summary of the dataset
 summary(data_bs)
+dim(data_bs)
 ```
 
 ```{r}
@@ -61,14 +64,70 @@ head(data_rv)
 ```{r}
 #Structure and summary of the dataset
 summary(data_rv)
+dim(data_rv)
+str(data_rv$date)
 ```
 
+#Load libraries
+
+After understanding tasks included in this reports which are mentioned later, we needs to load necessary librabries for analysis including tidyverse,ggplot2, and kableExtra
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(kableExtra)
+```
+
+#Clean datasets
+
+There are steps in cleaning including reformating, removing duplicated observations and handling N/A. After having first glance of summary dataset. We can see that:
+
+- Date in data_user is misformated as character instead of date
+
+- There are some N/A values in collunms of 3 of datasets- namely Name (formated as "" instead of N/A) in data_bs, or Date in data_rv
+
+```{r}
+#Assign NA value for "" in name for data_bs
+data_bs[data_bs == ""] <- NA
+#Assign NA value for "" in name for data_user
+data_users[data_users == ""] <- NA
+#Assign Na value for "" in text
+data_rv[data_rv == ""] <- NA
+#Format date for date in data_users
+data_users$member_since=as.Date(data_users$member_since)
+
+# Remove all duplicated rows
+data_users=data_users[!duplicated(data_users$user_id), ]
+data_bs=data_bs[!duplicated(data_bs$business_id), ]
+data_rv=data_rv[!duplicated(data_rv$review_id), ]
+
+#Remove all N/A values in 3 datasets
+data_users <- na.omit(data_users)
+data_bs <- na.omit(data_bs)
+data_rv <- na.omit(data_rv)
+```
+
+```{r}
+#Check dimensions again for NA rows
+dim(data_users)
+dim(data_bs)
+dim(data_rv)
+```
+
+After filtering out the N/A values in collumns of three datasets, it significant decreased numbers of rows for 
+
+- Data_users from 38801 to 36518    
+
+- Data_bs 194001 to 16661 
+
+- Data_rv 194001 to 171767  
 
 
+#Analysis tasks
 
+1. Write the code to analyse the review behaviour across user groups. The users should be grouped into 3 group: Veteran, Intermediate and New (based on their member since date) before 2017, between 2017-2022, and after 2022 respectively. Calculate the numbers of users, their average review stars and average number of reviews per user. Tabulate the data using kable or kableextra. Visualise the Average Review Stars by User Age Group. You are required to make sure you handle the NA value in your analysis. Explain your findings.
 
-
-
+Solution:
 
 
 
