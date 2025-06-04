@@ -247,10 +247,28 @@ Solution:
 
 Task 2.1:  The code to analyse the average reviews star by State
 
-Since we are interested in analyzing the average reviews stars by State. We use 2 collumns of available business.avg.stars and review_count grouped by state for analyzing. As below, we can get sense by looking by the first 10 rows.
+Since we are interested in analyzing the average reviews stars by State. 
+There are 2 ways to doing that
 
+1. We use 2 collumns of available business.avg.stars and review_count grouped by state for analyzing. As below, we can get sense by looking by the first 10 rows.
 ```{r}
-joined_data= joined_data %>% left_join(data_bs, by="business_id")
+business_stats <- data_bs %>% group_by(state) %>% 
+  summarise(
+    # Total number of businesses
+    total_business = n_distinct(business_id),
+    
+    # Average review stars per business
+    avg_review_stars = mean(business.avg.stars, na.rm = TRUE),
+    
+    # Number of reviews of all businesses
+    num_reviews = sum(review_count, na.rm = TRUE)
+  )
+business_stats
+```
+
+2. Join two table together then calculate the number_reviews by distinct(review_id). There is some difference due to the N/A in matching betwwen these two tables. As we can see 3338 NA in the second methods
+```{r}
+joined_data= joined_data %>% inner_join(data_bs, by="business_id")
 business_stats <- joined_data %>% group_by(state) %>% 
   summarise(
     # Total number of businesses
@@ -262,7 +280,7 @@ business_stats <- joined_data %>% group_by(state) %>%
     # Number of reviews of all businesses
     num_reviews = n_distinct(review_id)
   )
-head(business_stats,10)
+business_stats
 ```
 Task 2.2 Calculate the average review star, the number of reviews and the number of unique users.
 
