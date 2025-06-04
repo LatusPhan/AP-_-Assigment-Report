@@ -105,6 +105,9 @@ data_rv=data_rv[!duplicated(data_rv$review_id), ]
 data_users <- na.omit(data_users)
 data_bs <- na.omit(data_bs)
 data_rv <- na.omit(data_rv)
+
+#Remove 2 collumns as the annoucement 
+data_users<- data_users %>% select(-review_count, -average_stars)
 ```
 
 ```{r}
@@ -128,6 +131,123 @@ After filtering out the N/A values in collumns of three datasets, it significant
 1. Write the code to analyse the review behaviour across user groups. The users should be grouped into 3 group: Veteran, Intermediate and New (based on their member since date) before 2017, between 2017-2022, and after 2022 respectively. Calculate the numbers of users, their average review stars and average number of reviews per user. Tabulate the data using kable or kableextra. Visualise the Average Review Stars by User Age Group. You are required to make sure you handle the NA value in your analysis. Explain your findings.
 
 Solution:
+
+Task 1.1: The users are grouped into 3 group: Veteran, Intermediate and New (based on their member since date) before 2017, between 2017-2022, and after 2022 respectively.
+
+For this task, the author created a new collumn for the category which each user_id belong to. 
+
+
+```{r}
+#Create new dataframe from data of data_users
+
+data_users <- data_users %>%
+
+  #Create a new column for data_users for Veteran, Intermediate, and New by mutate
+  mutate( 
+    
+#The column is defined as users_group
+    users_group = case_when(
+      
+      #Case_when to categorise based on member_since of data_users
+      
+      #Case 1: Before 2017-01-01
+      data_users$member_since < as.Date("2017-01-01") ~ "Veteran",
+      
+      #Case 2: Before 2022-12-31 and after 2017-01-01
+      data_users$member_since >= as.Date("2017-01-01") &data_users$member_since <= as.Date("2022-12-31") ~ "Intermediate",
+      
+      #Case 3: After 2022-12-31
+      data_users$member_since > as.Date("2022-12-31") ~ "New",
+      #If data can not be categorised, assign NA
+      TRUE ~ NA_character_
+    )
+  )
+```
+
+Task 1.2: Calculate the numbers of users, their average review stars and average number of reviews per user.
+
+For this task, since the count of reviews for each users is not avaialble. Therefore, firstly, data_rv and data_users are joined to get the dataframe for counting number of repeated foreign key (users_id), and assign that to new dataframe. Then it can be joined back to the original users dataset. This dataset once is joined again with the data_review to appear the counts as a new collumn. Then we can use that for summarising the numbers of users, their average review stars and average number of reviews per user. 
+
+```{r}
+
+#Inner join valid user_id in both tables 
+joined_data= data_rv %>% inner_join(data_users, by="user_id")
+head(joined_data)
+
+#Create new dataframe for review counts
+user_review_counts <- joined_data %>%
+  group_by(user_id) %>%
+  summarise(review_count = n())
+
+data_users <- data_users %>%
+  left_join(user_review_counts, by = "user_id")
+head(data_users)
+
+#Rejoin data with the new collumn
+joined_data= data_rv %>% inner_join(data_users, by="user_id")
+head(joined_data)
+
+user_stats <- joined_data %>%group_by(users_group) %>% 
+  #Use summarise to reduce data of data_users into 1 row then return neeeded statistics as defined names like total_users,avg_review_stars...
+  summarise(
+    # Total number of users in the first collumn
+    total_users = n_distinct(user_id),
+    
+    # Average review stars per user in the second collumn
+    avg_review_stars = mean(stars, na.rm = TRUE),
+    
+    # Average number of reviews per user in the third collumn
+    avg_reviews_per_user = mean(review_count, na.rm = TRUE)
+  )
+
+```
+Task 1.3 Tabulate the data using kable or kableextra
+
+As personall peference, this author change the colnames of the dataframe, then choosing font of Camberia with the classic theme.
+```{r}
+#Change the name of columns for easy-reading
+
+colnames(user_stats)=c("Users Types","Number of users", "Average review stars per user","Average number of reviews per user")
+user_stats %>% 
+  #Set the title 
+  kbl(caption = "Table for numbers of users and their reviews")%>%
+  
+  #Format the table, hover indicate the change of color in html, 
+  #Full_width=F expanding across paper, 
+  #Hover using to change color in html/ webpage
+  
+  kable_classic("hover",full_width=F,html_font = "Camberia")
+
+```
+Task 1.4 Visualise the Average Review Stars by User Age Group.
+
+We use ggplot as our visualization function. After choosing x and y axises by using aes() or mapping it in geom_col, we fill with black, and adjust title,lables, then choose theme.
+```{r}
+#Draw graph by using ggplot
+summary(user_stats)
+ggplot(user_stats, aes(x = `Users Types`, y =`Average review stars per user`)) +
+   geom_col(fill = "black") +
+  geom_text(aes(label = round(`Average review stars per user`, 2)), vjust = -0.5)+
+  labs(
+    title = "Average Review Stars by User Group",
+    x = "User Group",
+    y = "Average Review Stars"
+  ) +
+  theme_minimal()
+
+```
+
+
+2. Write the code to analyse the average reviews star by State. Calculate the average review star, the
+number of reviews and the number of unique users. Visualise the Average Review Stars by State.
+You are required to make sure you take care of the NA value in your analysis. Elaborate on the
+findings.
+
+
+
+
+
+
 
 
 
