@@ -266,7 +266,7 @@ business_stats <- data_bs %>% group_by(state) %>%
 business_stats
 ```
 
-2. Join two table together then calculate the number_reviews by distinct(review_id). There is some difference due to the N/A in matching betwwen these two tables. As we can see 3338 NA in the second methods
+2. Join two table together then calculate the number_reviews by distinct(review_id). There are difference in dimension due to the N/A appeared in matching methods between these two tables. As we can see 3338 NA in the second methods
 ```{r}
 joined_data= joined_data %>% inner_join(data_bs, by="business_id")
 business_stats <- joined_data %>% group_by(state) %>% 
@@ -335,7 +335,19 @@ print(plot_state)
 ```
 
 
+3. Write the code to analyse the top users and their behaviours. First, identify the top 10 users by the
+review count. For those top 10 users, calculate their average review stars. Tabulate the summary of
+the data (kable/kableextra). You are required to make sure you handle the NA value in your analysis.
+Visualise their rating distrubtion using ggplot2 - boxplot. Discuss your findings.
 
+Task 3.1  First, identify the top 10 users by the review count.
+
+By sorting the number of count of reviews after grouping user_id, we then split the dataframe for top 10
+
+```{r}
+top_10= joined_data %>% group_by(user_id) %>% arrange(desc(review_count.x))
+top_10
+```
 
 
 
