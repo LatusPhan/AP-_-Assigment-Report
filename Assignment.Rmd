@@ -177,7 +177,7 @@ head(joined_data,10)
 #Create new dataframe for review counts
 user_review_counts <- joined_data %>%
   group_by(user_id) %>%
-  summarise(review_count = n())
+  summarise(review_count = n_distinct(review_id))
 
 data_users <- data_users %>%
   left_join(user_review_counts, by = "user_id")
@@ -345,9 +345,95 @@ Task 3.1  First, identify the top 10 users by the review count.
 By sorting the number of count of reviews after grouping user_id, we then split the dataframe for top 10
 
 ```{r}
-top_10= joined_data %>% group_by(user_id) %>% arrange(desc(review_count.x))
+top_10= joined_data %>% group_by(user_id) %>%summarise(
+  average_stars=mean(stars,na.rm=TRUE),
+) %>% inner_join(data_users,by="user_id") %>% arrange(desc(review_count)) %>% slice(1:10)
 top_10
 ```
 
+Task 3.2 Tabulate the summary of the data (kable/kableextra). 
+
+```{r}
+top_10 %>% 
+  kable("html", caption = "Top 10 Most Active Users: Review Summary") %>%
+  kable_classic("hover", full_width = F, html_font = "Cambria")
+``` 
+Task 3.3 Tabulate the summary of the data (kable/kableextra). 
+```{r}
+top_10$users_group <- as.factor(top_10$users_group)
+plot_3=ggplot(data=top_10, aes(x = user_id, y = review_count,fill = users_group)) +
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Rating Distribution of Top 10 Most Active Users",
+    x = "User ID",
+    y = "Review Stars"
+  ) +
+  theme_minimal() 
+print(plot_3)
+```
+
+4.  Write the code to analyse if there is a major difference between the review behavior of users who
+joined before and after 2020. For these 2 groups of users, compare their star rating behaviour and
+the length of the reviews (number of charaters in the review text). You are required to make sure
+you handle the NA value in your analysis. Visualise the average review length by the two groups.
+Discuss your findings.
+
+Task 4.1: The code to analyse if there is a major difference between the review behavior of users who
+joined before and after 2020.
+
+```{r}
+
+user_cat=data_users %>%
+  #Create a new collumn for  a new category
+  mutate(member_since=as.Date(member_since),
+  Before_2020=if_else(
+    member_since < as.Date("2020-01-01"), 
+    TRUE, 
+    FALSE
+  )
+) %>% 
+  #Inner join with data_review for new collumn lenght
+  inner_join(data_rv,by="user_id") %>%
+  #Create new column for review length
+  mutate(review_length=nchar(text))
+user_cat
+
+review_by_group=user_cat %>% 
+  #Group by TRUE/False value
+  group_by(Before_2020) %>% 
+  #Summary
+  summarise(
+    #Mean
+    average_stars_rating=mean(stars,na.rm=TRUE),
+    #Average length of reviews
+    avg_review_length = mean(review_length, na.rm = TRUE),    
+    #Number of reviews
+    n_reviews = n(),
+    #Number of valid users
+    n_unique_users = n_distinct(user_id))
+review_by_group
+
+```
 
 
+```{r}
+#Rename column names for the dataset
+colnames(review_by_group)=c("Join before 2020","Average star rating","Average length of review ", "Number of reviews","Number of users")
+#Draw table for the analysis
+review_by_group %>% kbl(caption = "Summary by Group") %>%  kable_paper("hover",full_width=F,html_font = "Camberia")
+#Draw boxplot graph for analysis and with x, and y axis
+ggplot(user_cat, aes(x = Before_2020, y = review_length)) +
+  #Choose type of graph and colors
+  geom_boxplot(fill = "white", alpha = 0.7) +
+  #Choose statistic for x value 
+  stat_summary(fun = mean, geom = "point", shape = 18, size = 3, color = "red") +
+  #Set title and x, and y labels
+  labs(title = "Review Length Distribution by User Join Period",
+       x = "User Group",
+       y = "Review Length (characters)") +
+  theme_minimal() +
+  
+  #Adjust title
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
