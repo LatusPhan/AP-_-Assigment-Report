@@ -2,7 +2,10 @@
 title: "Assignment_AP"
 author: "Phan Minh Trung"
 date: "2025-06-03"
-output: pdf_document
+output:
+  word_document: default
+  pdf_document: default
+  always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -25,6 +28,7 @@ Before getting into analysis, the first and foremost step in analysis is loading
 The provided datasets are formatted as csv files. Therefore we use read.csv built in the Rstudio
 
 ```{r}
+library(readr)
 #Load data
 data_users=read.csv("users.csv")
 data_bs=read.csv("businesses.csv")
@@ -214,7 +218,7 @@ user_stats <- joined_data %>%group_by(users_group) %>%
 
 Task 1.3 Tabulate the data using kable or kableextra
 
-As a personall preference, this author change the colnames of the dataframe, then choosing font of Camberia with the classic theme.
+As a personal preference, this author change the colnames of the dataframe, then choosing font of Camberia with the classic theme. However, due to unexpected kniting problems(using kbl to produce image as HTML instead of kable), the comments using kable for below tables shows the HTML version as an output.
 
 ```{r}
 #Change the name of columns for easy-reading
@@ -222,13 +226,13 @@ As a personall preference, this author change the colnames of the dataframe, the
 colnames(user_stats)=c("Users Types","Number of users", "Average review stars per user","Average number of reviews per user")
 user_stats %>% 
   #Set the title 
-  kbl(caption = "Table for numbers of users and their reviews")%>%
+  kable(caption = "Table for numbers of users and their reviews")
   
   #Format the table, hover indicate the change of color in html, 
   #Full_width=F expanding across paper, 
   #Hover using to change color in html/ webpage
+  #kable_classic("hover",full_width=F,html_font = "Camberia")
   
-  kable_classic("hover",full_width=F,html_font = "Camberia")
 
 ```
 As the summary of user_stats, we can see that there is a big number of users from Intermediate with 21700, followed by New and Veteran users. There is no major difference in review behaviour in 3 groups considering average review stars per user, and average number of reviews
@@ -318,8 +322,9 @@ colnames(stat_join_table)= c(
 )
 # Create formatted table
 stat_join_table %>%
-  kbl(caption = "Table: Summary of Total and Average  Review Stars, and Total Reviews") %>%
-  kable_classic("hover", full_width = F, html_font = "Cambria")
+  kable(caption = "Table: Summary of Total and Average  Review Stars, and Total Reviews") 
+#%>%
+  #kable_classic("hover", full_width = F, html_font = "Cambria")
 
 
 
@@ -367,8 +372,8 @@ Task 3.2 Tabulate the summary of the data (kable/kableextra).
 
 ```{r}
 top_10 %>% 
-  kable("html", caption = "Top 10 Most Active Users: Review Summary") %>%
-  kable_classic("hover", full_width = F, html_font = "Cambria")
+  kable(caption = "Top 10 Most Active Users: Review Summary")
+  #kable_classic("hover", full_width = F, html_font = "Cambria")
 ``` 
 Task 3.3 Visualise their rating distrubtion using ggplot2 - boxplot
 
@@ -433,7 +438,8 @@ user_cat=data_users %>%
   inner_join(data_rv,by="user_id") %>%
   #Create new column for review length
   mutate(review_length=nchar(text))
-user_cat
+
+head(user_cat)
 
 review_by_group=user_cat %>% 
   #Group by TRUE/False value
@@ -459,8 +465,11 @@ To visualise the datasets or the summary of 2 groups, the box plot is used to sh
 ```{r}
 #Rename column names for the dataset
 colnames(review_by_group)=c("Join before 2020","Average star rating","Average length of review ", "Number of reviews","Number of users")
+
 #Draw table for the analysis
-review_by_group %>% kbl(caption = "Summary by Group") %>%  kable_paper("hover",full_width=F,html_font = "Camberia")
+
+review_by_group %>% kable(caption = "Summary by Group") #%>%  kable_paper("hover",full_width=F,html_font = "Camberia")
+
 #Draw boxplot graph for analysis and with x, and y axis
 ggplot(user_cat, aes(x = Before_2020, y = review_length)) +
   #Choose type of graph and colors
