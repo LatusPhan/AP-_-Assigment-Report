@@ -525,7 +525,7 @@ As the result is obtain, there is no major difference between these groups. If t
 
 # Conclusion 
 
-This reports provided an overal analysis of three datasets including information for users, businesses, and reviews. Through data cleaning and reformating, this report identified some trends, behavior of users in each defined groups, and state of the businesses.By using knowledge introduced in the lectures and from reference list, this report utilize some common libraries for data analysis.
+This reports provided an overal analysis of three datasets including information for users, businesses, and reviews. Through data cleaning and reformating, this report identified some trends, behavior of users in each defined groups, and state of the businesses.By using knowledge introduced in the lectures and from reference list, this report utilize some common libraries for data analysis. The github for the file can be found at https://github.com/LatusPhan/AP-_-Assigment-Report
 
 
 # Reference list 
