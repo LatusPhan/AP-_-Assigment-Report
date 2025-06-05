@@ -534,6 +534,8 @@ GeeksforGeeks (2023) How to Use na.omit in R?, GeeksforGeeks. GeeksforGeeks. Ava
 
 Hao, Z. (2024). Awesome HTML table with knitr::kable and kableExtra. Available at: https://haozhu233.github.io/kableExtra/awesome_table_in_html.html [Accessed 5 June 2025].
 
+Kassambara, A. (no date) Identify and remove duplicate data in R. Datanovia. Available at: https://www.datanovia.com/en/lessons/identify-and-remove-duplicate-data-in-r/ (Accessed: 5 June 2025).
+
 
 
 
