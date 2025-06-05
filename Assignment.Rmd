@@ -15,6 +15,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Report for assignment 
 
+Author: Phan Minh Trung
+
+Student id: 22117538.
+
+By including this statement, we the authors of this work, verify that:
+
+• We hold a copy of this assignment that we can produce if the original is lost or damaged.
+
+• We hereby certify that no part of this assignment/product has been copied from any other student’s
+work or from any other source except where due acknowledgement is made in the assignment.
+
+• No part of this assignment/product has been written/produced for us by another person except
+where such collaboration has been authorised by the subject lecturer/tutor concerned.
+
+• We are aware that this work may be reproduced and submitted to plagiarism detection software programs for the purpose of detecting possible plagiarism (which may retain a copy on its database
+for future plagiarism checking).
+
+• We hereby certify that we have read and understand what the School of Computing, Engineering
+and Mathematics defines as minor and substantial breaches of misconduct as outlined in the learning
+guide for this unit.
+
 # Introduction
 
 In this day and age, understanding user behavior and engagement patterns is significant in developing a digital platforms and constructing a  meaningful user experiences. By tasks provided below, this report provides an analytical perspective of user activity within an online community, based on real-world data comprising user profiles, business listings, and their reviews. By applying data science workflow, the primary objective of this project is to gather insights from these datasets- users, business, and reviews using RStudio as a major software and language for analysis .
