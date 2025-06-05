@@ -15,11 +15,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Report for assignment 
 
-#Introduction
+# Introduction
 
 In this day and age, understanding user behavior and engagement patterns is significant in developing a digital platforms and constructing a  meaningful user experiences. By tasks provided below, this report provides an analytical perspective of user activity within an online community, based on real-world data comprising user profiles, business listings, and their reviews. By applying data science workflow, the primary objective of this project is to gather insights from these datasets- users, business, and reviews using RStudio as a major software and language for analysis .
 
-#Pre-process data procedures
+# Pre-process data procedures
 
 Before getting into analysis, the first and foremost step in analysis is loading, getting sense and cleaning datasets. 
 
@@ -76,7 +76,7 @@ dim(data_rv)
 str(data_rv$date)
 ```
 
-#Load libraries
+# Load libraries
 
 After understanding tasks included in this reports which are mentioned later, we needs to load necessary librabries for analysis including tidyverse,ggplot2, and kableExtra
 
@@ -86,7 +86,7 @@ library(ggplot2)
 library(kableExtra)
 ```
 
-#Clean datasets
+# Clean datasets
 
 There are steps in cleaning including reformating, removing duplicated observations and handling N/A. After having first glance of summary dataset. We can see that:
 
@@ -502,12 +502,12 @@ print(plot_3)
 ```
 As the result is obtain, there is no major difference between these groups. If the interest is whether there chances for difference, hypothesis testing is needed for further investigation. While there is more numbers of users,  average stars, and reviews joining after 2020, the mean of review text is shorter approximately 0.2.
 
-#Conclusion 
+# Conclusion 
 
 This reports provided an overal analysis of three datasets including information for users, businesses, and reviews. Through data cleaning and reformating, this report identified some trends, behavior of users in each defined groups, and state of the businesses.By using knowledge introduced in the lectures and from reference list, this report utilize some common libraries for data analysis.
 
 
-#Reference list 
+# Reference list 
 
 GeeksforGeeks (2023) How to Use na.omit in R?, GeeksforGeeks. GeeksforGeeks. Available at: https://www.geeksforgeeks.org/remove-unnecessary-values-from-an-object-in-r-programming-na-omit-function/ (Accessed: 5 June 2025).
 
