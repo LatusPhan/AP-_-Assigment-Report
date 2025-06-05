@@ -14,7 +14,7 @@ Report for assignment
 
 #Introduction
 
-In this day and age, understanding user behavior and engagement patterns is significant in developing a digital platforms and constructing a  meaningful user experiences. By tasks provided below, this report provides an analytical perspective of user activity within an online community, based on real-world data comprising user profiles, business listings, and their reviews. By applying data science workflow, the primary objective of this project is to gather insights from these datasets- users, business, and reviews using RStudio as a major software and language for analysis 
+In this day and age, understanding user behavior and engagement patterns is significant in developing a digital platforms and constructing a  meaningful user experiences. By tasks provided below, this report provides an analytical perspective of user activity within an online community, based on real-world data comprising user profiles, business listings, and their reviews. By applying data science workflow, the primary objective of this project is to gather insights from these datasets- users, business, and reviews using RStudio as a major software and language for analysis .
 
 #Pre-process data procedures
 
@@ -36,18 +36,21 @@ data_rv=read_csv("reviews.csv",show_col_types = FALSE)
 #First ten rows of users dataset
 head(data_users,10)
 ```
+
+We witnessed data_users with 38801 observations, 5 fields namely user_id, name, review_count, average_stars,  and member_since
+
 ```{r}
 #Structure and summary of the dataset
 summary(data_users)
 dim(data_users)
 ```
 
-
 ```{r}
 #First ten rows of users dataset
 head(data_bs,10)
-
 ```
+
+We witnessed data_bs with 19401 observations, 8 fields namely business_id, name, city, state,  business.avg.stars, and business_group. 
 
 ```{r}
 #Structure and summary of the dataset
@@ -60,6 +63,7 @@ dim(data_bs)
 head(data_rv,10)
 ```
 
+We witnessed data_rv with 19401 observations, 6 fields namely review_id, user_id, business_id, stars,  date, and text.
 
 ```{r}
 #Structure and summary of the dataset
@@ -84,7 +88,11 @@ There are steps in cleaning including reformating, removing duplicated observati
 
 - Date in data_user is misformated as character instead of date
 
-- There are some N/A values in collunms of 3 of datasets- namely Name (formated as "" instead of N/A) in data_bs, or Date in data_rv
+- There are some N/A values in collunms of 3 of datasets- namely Name (formated as "" instead of N/A) in data_bs, or Date in data_rv and data_users. 
+
+- Removing duplicated rows in datasets with its primary key (id).
+
+One thing to notice that, the author after cleaning data still uses na.rm in this analysis to ensure droping N/A in the analysis.
 
 ```{r}
 #Assign NA value for "" in name for data_bs
@@ -110,6 +118,8 @@ data_rv <- na.omit(data_rv)
 data_users<- data_users %>% select(-review_count, -average_stars)
 ```
 
+At this stage, we check the dimension after cleaning:
+
 ```{r}
 #Check dimensions again for NA rows
 dim(data_users)
@@ -134,7 +144,7 @@ Solution:
 
 Task 1.1: The users are grouped into 3 group: Veteran, Intermediate and New (based on their member since date) before 2017, between 2017-2022, and after 2022 respectively.
 
-For this task, the author created a new collumn for the category which each user_id belong to. 
+For this task, the author created a new column for the category which each user_id belong to. Case_when is used as conditional function for grouping. 
 
 
 ```{r}
@@ -166,7 +176,7 @@ data_users <- data_users %>%
 
 Task 1.2: Calculate the numbers of users, their average review stars and average number of reviews per user.
 
-For this task, since the count of reviews for each users is not avaialble. Therefore, firstly, data_rv and data_users are joined to get the dataframe for counting number of repeated foreign key (users_id), and assign that to new dataframe. Then it can be joined back to the original users dataset. This dataset once is joined again with the data_review to appear the counts as a new collumn. Then we can use that for summarising the numbers of users, their average review stars and average number of reviews per user. 
+For this task, since the count of reviews for each users is not available (as requested in the annoucement). Therefore, firstly, data_rv and data_users are joined to get the dataframe for counting number of reviews (review_id) by users_id, and assign that to the new dataframe. Then it can be joined back to the original user dataset. This dataset once is joined again with the data_review to update the counts as a new column. Then we can use that for summarising the numbers of users, their average review stars and average number of reviews per user. 
 
 ```{r}
 
@@ -201,9 +211,11 @@ user_stats <- joined_data %>%group_by(users_group) %>%
   )
 
 ```
+
 Task 1.3 Tabulate the data using kable or kableextra
 
-As personall peference, this author change the colnames of the dataframe, then choosing font of Camberia with the classic theme.
+As a personall preference, this author change the colnames of the dataframe, then choosing font of Camberia with the classic theme.
+
 ```{r}
 #Change the name of columns for easy-reading
 
@@ -219,9 +231,12 @@ user_stats %>%
   kable_classic("hover",full_width=F,html_font = "Camberia")
 
 ```
+As the summary of user_stats, we can see that there is a big number of users from Intermediate with 21700, followed by New and Veteran users. There is no major difference in review behaviour in 3 groups considering average review stars per user, and average number of reviews
+
 Task 1.4 Visualise the Average Review Stars by User Age Group.
 
-We use ggplot as our visualization function. After choosing x and y axises by using aes() or mapping it in geom_col, we fill with black, and adjust title,lables, then choose theme.
+We use ggplot as our visualization function. After choosing x and y axis, by using aes() or mapping it in geom_col, we fill with black, and adjust title,lables, then choose theme.
+
 ```{r}
 #Draw graph by using ggplot
 summary(user_stats)
@@ -238,8 +253,7 @@ ggplot(user_stats, aes(x = `Users Types`, y =`Average review stars per user`)) +
 ```
 
 
-2. Write the code to analyse the average reviews star by State. Calculate the average review star, the
-number of reviews and the number of unique users. Visualise the Average Review Stars by State.
+2. Write the code to analyse the average reviews star by State. Calculate the average review star, the number of reviews and the number of unique users. Visualise the Average Review Stars by State.
 You are required to make sure you take care of the NA value in your analysis. Elaborate on the
 findings.
 
@@ -247,10 +261,10 @@ Solution:
 
 Task 2.1:  The code to analyse the average reviews star by State
 
-Since we are interested in analyzing the average reviews stars by State. 
-There are 2 ways to doing that
+Since we are interested in analyzing the average reviews stars by State. There are 2 ways to doing that
 
-1. We use 2 collumns of available business.avg.stars and review_count grouped by state for analyzing. As below, we can get sense by looking by the first 10 rows.
+1. We use 2 columns of available business.avg.stars and review_count grouped by state for analyzing. As below, we can get sense by looking by the first 10 rows.
+
 ```{r}
 business_stats <- data_bs %>% group_by(state) %>% 
   summarise(
@@ -263,10 +277,11 @@ business_stats <- data_bs %>% group_by(state) %>%
     # Number of reviews of all businesses
     num_reviews = sum(review_count, na.rm = TRUE)
   )
-business_stats
+head(business_stats,10)
 ```
 
 2. Join two table together then calculate the number_reviews by distinct(review_id). There are difference in dimension due to the N/A appeared in matching methods between these two tables. As we can see 3338 NA in the second methods
+
 ```{r}
 joined_data= joined_data %>% inner_join(data_bs, by="business_id")
 business_stats <- joined_data %>% group_by(state) %>% 
@@ -335,14 +350,11 @@ print(plot_state)
 ```
 
 
-3. Write the code to analyse the top users and their behaviours. First, identify the top 10 users by the
-review count. For those top 10 users, calculate their average review stars. Tabulate the summary of
-the data (kable/kableextra). You are required to make sure you handle the NA value in your analysis.
-Visualise their rating distrubtion using ggplot2 - boxplot. Discuss your findings.
+3. Write the code to analyse the top users and their behaviours. First, identify the top 10 users by the review count. For those top 10 users, calculate their average review stars. Tabulate the summary of the data (kable/kableextra). You are required to make sure you handle the NA value in your analysis. Visualise their rating distrubtion using ggplot2 - boxplot. Discuss your findings.
 
 Task 3.1  First, identify the top 10 users by the review count.
 
-By sorting the number of count of reviews after grouping user_id, we then split the dataframe for top 10
+By grouping user_id and using joined_data to calculate average stars as new column,  we sorted dataset in descending order by review_count , we then split the dataframe for top 10 by using slice and update column that average stars on data_users. 
 
 ```{r}
 top_10= joined_data %>% group_by(user_id) %>%summarise(
@@ -358,7 +370,28 @@ top_10 %>%
   kable("html", caption = "Top 10 Most Active Users: Review Summary") %>%
   kable_classic("hover", full_width = F, html_font = "Cambria")
 ``` 
-Task 3.3 Tabulate the summary of the data (kable/kableextra). 
+Task 3.3 Visualise their rating distrubtion using ggplot2 - boxplot
+
+First, we filter out the user_id in the top_10 in the data_rv. Then we can visualise the distrubtion of stars (in the data_rv) by using box plot.
+
+```{r}
+top_10_reviews <- data_rv %>%
+  filter(user_id %in% top_10$user_id) 
+
+ggplot(top_10_reviews, aes(x = user_id, y = stars)) +
+  geom_boxplot(fill = "grey", color = "black") +
+  labs(
+    title = "Rating Distribution of Top 10 Users",
+    x = "User ID",
+    y = "Star Rating"
+  ) +
+  theme_minimal() 
+
+```
+
+In case, there is further interest in their review behavior, we can look at the group which they are in and the number of reviews they posted. 
+
+
 ```{r}
 top_10$users_group <- as.factor(top_10$users_group)
 plot_3=ggplot(data=top_10, aes(x = user_id, y = review_count,fill = users_group)) +
@@ -372,6 +405,8 @@ plot_3=ggplot(data=top_10, aes(x = user_id, y = review_count,fill = users_group)
 print(plot_3)
 ```
 
+It is evidence that the number of users who are Intermediate made up the largest proportion. This is followed by New users, suggesting that there are the more recent users actively responding in comparision to the older group (Veteran). 
+
 4.  Write the code to analyse if there is a major difference between the review behavior of users who
 joined before and after 2020. For these 2 groups of users, compare their star rating behaviour and
 the length of the reviews (number of charaters in the review text). You are required to make sure
@@ -380,6 +415,8 @@ Discuss your findings.
 
 Task 4.1: The code to analyse if there is a major difference between the review behavior of users who
 joined before and after 2020.
+
+To explore the difference between these two groups, the dataset can add another column with TRUE/FALSE value for whom joined before 2020. This dataframe (user_cat) can joining the data_rv to give the insights/details about their behaviours of reviewing. By using summary to look at average of stars, length of review text, and their users in both groups, the result is 
 
 ```{r}
 
@@ -414,6 +451,9 @@ review_by_group=user_cat %>%
 review_by_group
 
 ```
+Task 4.2 Visualise the average review length by the two groups
+
+To visualise the datasets or the summary of 2 groups, the box plot is used to show the mean, quartile, and outliners between groups for comparing the length of reviews. 
 
 
 ```{r}
@@ -435,5 +475,35 @@ ggplot(user_cat, aes(x = Before_2020, y = review_length)) +
   
   #Adjust title
   theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+```{r}
+
+  plot_3=ggplot(data=review_by_group, aes(x = `Join before 2020`, y = `Average length of review `,fill = `Join before 2020`)) +
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Review  Length of 2 groups",
+    x = "User groups",
+    y = "Review Length"
+  ) +
+  theme_minimal() 
+print(plot_3)
 
 ```
+As the result is obtain, there is no major difference between these groups. If the interest is whether there chances for difference, hypothesis testing is needed for further investigation. While there is more numbers of users,  average stars, and reviews joining after 2020, the mean of review text is shorter approximately 0.2.
+
+#Conclusion 
+
+This reports provided an overal analysis of three datasets including information for users, businesses, and reviews. Through data cleaning and reformating, this report identified some trends, behavior of users in each defined groups, and state of the businesses.By using knowledge introduced in the lectures and from reference list, this report utilize some common libraries for data analysis.
+
+
+#Reference list 
+
+GeeksforGeeks (2023) How to Use na.omit in R?, GeeksforGeeks. GeeksforGeeks. Available at: https://www.geeksforgeeks.org/remove-unnecessary-values-from-an-object-in-r-programming-na-omit-function/ (Accessed: 5 June 2025).
+
+Hao, Z. (2024). Awesome HTML table with knitr::kable and kableExtra. Available at: https://haozhu233.github.io/kableExtra/awesome_table_in_html.html [Accessed 5 June 2025].
+
+
+
+
